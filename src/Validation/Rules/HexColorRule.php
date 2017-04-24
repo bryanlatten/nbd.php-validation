@@ -9,8 +9,8 @@ use Behance\NBD\Validation\Abstracts\RegexRuleAbstract;
  */
 class HexColorRule extends RegexRuleAbstract {
 
-  protected $_error_template = "%fieldname% must be a HEX color without #";
+  protected $_error_template = "%fieldname% must be a HEX color";
 
-  protected $_pattern = '/^([0-9a-f]{3}|[0-9a-f]{6})$/i';
+  protected $_pattern = '/^#?([0-9a-f]{3}|[0-9a-f]{6})$/i';
 
 } // HexColorRule
