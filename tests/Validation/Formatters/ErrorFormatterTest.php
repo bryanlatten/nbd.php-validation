@@ -1,15 +1,20 @@
 <?php
 
-use Behance\NBD\Validation\Formatters\ErrorFormatter;
+use Behance\NBD\Validation\Formatters;
+use Behance\NBD\Validation\Rules;
 
 /**
  * @group validation
  */
-class NBD_Validation_Formatters_ErrorFormattersTest extends PHPUnit_Framework_TestCase {
+class NBD_Validation_Formatters_ErrorFormattersTest extends \PHPUnit\Framework\TestCase {
 
-  private $_class = 'Behance\NBD\Validation\Formatters\ErrorFormatter',
-          $_rule  = 'Behance\NBD\Validation\Rules\IntegerRule';
+  private $_rule;
 
+  protected function setUp() {
+
+    $this->_rule = new Rules\IntegerRule();
+
+  } // setUp
 
   /**
    * @test
@@ -17,10 +22,9 @@ class NBD_Validation_Formatters_ErrorFormattersTest extends PHPUnit_Framework_Te
   public function getterSetter() {
 
     $context = [ 'abc' => 123 ];
-    $rule    = $this->getMock( $this->_rule, null );
-    $class   = $this->getMock( $this->_class, null, [ $rule, $context ] );
+    $class   = new Formatters\ErrorFormatter( $this->_rule, $context );
 
-    $this->assertSame( $rule, $class->getRule() );
+    $this->assertSame( $this->_rule, $class->getRule() );
     $this->assertEquals( $context, $class->getContext() );
 
   } // getterSetter
@@ -32,16 +36,15 @@ class NBD_Validation_Formatters_ErrorFormattersTest extends PHPUnit_Framework_Te
    */
   public function renderContext( $template, array $context, $rendered, $constructor_context ) {
 
-    $rule = $this->getMock( $this->_rule, null );
-    $rule->setErrorTemplate( $template );
+    $this->_rule->setErrorTemplate( $template );
 
-    $params = [ $rule ];
+    $params = [ $this->_rule ];
 
     if ( $constructor_context && !empty( $context ) ) {
       $params[] = $context;
     }
 
-    $class = $this->getMock( $this->_class, null, $params );
+    $class = new Formatters\ErrorFormatter( $this->_rule, $context );
 
     if ( $constructor_context ) {
       $this->assertEquals( $rendered, $class->render() );
@@ -55,11 +58,10 @@ class NBD_Validation_Formatters_ErrorFormattersTest extends PHPUnit_Framework_Te
 
   /**
    * @test
-   * @dataProvider renderProvider
    */
   public function renderContextOverrides() {
 
-    $value0 = ErrorFormatter::FIELDNAME_DEFAULT;
+    $value0 = Formatters\ErrorFormatter::FIELDNAME_DEFAULT;
     $value1 = 'value1';
     $value2 = 'value2';
 
@@ -72,11 +74,10 @@ class NBD_Validation_Formatters_ErrorFormattersTest extends PHPUnit_Framework_Te
     $rendered1 = "{$value1} had a problem";
     $rendered2 = "{$value2} had a problem";
 
-    $rule = $this->getMock( $this->_rule, null );
-    $rule->setErrorTemplate( $template );
+    $this->_rule->setErrorTemplate( $template );
 
-    $default = $this->getMock( $this->_class, null, [ $rule ] );
-    $class   = $this->getMock( $this->_class, null, [ $rule, $constructor_context ] );
+    $default = new Formatters\ErrorFormatter( $this->_rule );
+    $class   = new Formatters\ErrorFormatter( $this->_rule, $constructor_context );
 
     // Default context takes precedence
     $this->assertEquals( $rendered0, $default->render() );

@@ -2,13 +2,13 @@
 /**
  * @group validation
  */
-class NBD_Validation_Rules_ContainedInRuleTest extends PHPUnit_Framework_TestCase {
+class NBD_Validation_Rules_ContainedInRuleTest extends \PHPUnit\Framework\TestCase {
 
   protected $_class = 'Behance\NBD\Validation\Rules\ContainedInRule';
 
   /**
    * @test
-   * @dataProvider testDataProvider
+   * @dataProvider isValidDataProvider
    */
   public function isValid( $input, $parameters, $expected_outcome ) {
 
@@ -39,7 +39,7 @@ class NBD_Validation_Rules_ContainedInRuleTest extends PHPUnit_Framework_TestCas
   /**
    * @return array
    */
-  public function testDataProvider() {
+  public function isValidDataProvider() {
 
     return [
         [ 'abc', [ 'abc', 'def', 'ghi' ], true ],
@@ -56,6 +56,6 @@ class NBD_Validation_Rules_ContainedInRuleTest extends PHPUnit_Framework_TestCas
         [ ( function() {} ), [ 'abc', 'def', 'ghi' ], false ],
     ];
 
-  } // testDataProvider
+  } // isValidDataProvider
 
 } // NBD_Validation_Rules_ContainedInRuleTest

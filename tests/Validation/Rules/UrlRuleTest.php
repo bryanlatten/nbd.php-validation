@@ -5,11 +5,11 @@ namespace Behance\NBD\Validation\Rules;
 /**
  * @group validation
  */
-class UrlRuleTest extends \PHPUnit_Framework_TestCase {
+class UrlRuleTest extends \PHPUnit\Framework\TestCase {
 
   /**
    * @test
-   * @dataProvider testDataProvider
+   * @dataProvider isValidDataProvider
    */
   public function isValid( $data, $expected ) {
 
@@ -23,7 +23,7 @@ class UrlRuleTest extends \PHPUnit_Framework_TestCase {
   /**
    * @return array
    */
-  public function testDataProvider() {
+  public function isValidDataProvider() {
 
     return [
         // allowed
@@ -74,6 +74,6 @@ class UrlRuleTest extends \PHPUnit_Framework_TestCase {
         [ ( function() {} ), false ],
     ];
 
-  } // testDataProvider
+  } // isValidDataProvider
 
 } // UrlRuleTest

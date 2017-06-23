@@ -5,7 +5,7 @@ use Behance\NBD\Validation\Providers\RulesProvider;
 /**
  * @group validation
  */
-class NBD_Validation_Providers_RulesProviderTest extends PHPUnit_Framework_TestCase {
+class NBD_Validation_Providers_RulesProviderTest extends \PHPUnit\Framework\TestCase {
 
   protected $_class      = 'Behance\NBD\Validation\Providers\RulesProvider',
             $_rule_class = 'Behance\NBD\Validation\Abstracts\RuleAbstract',

@@ -2,13 +2,13 @@
 /**
  * @group validation
  */
-class NBD_Validation_Rules_StringContainsRuleTest extends PHPUnit_Framework_TestCase {
+class NBD_Validation_Rules_StringContainsRuleTest extends \PHPUnit\Framework\TestCase {
 
   protected $_class = 'Behance\NBD\Validation\Rules\StringContainsRule';
 
   /**
    * @test
-   * @dataProvider testDataProvider
+   * @dataProvider isValidDataProvider
    */
   public function isValid( $input, $haystack, $pass_fail ) {
 
@@ -57,7 +57,7 @@ class NBD_Validation_Rules_StringContainsRuleTest extends PHPUnit_Framework_Test
   /**
    * @return array
    */
-  public function testDataProvider() {
+  public function isValidDataProvider() {
 
     return [
         [ 'abc', 'abcdefg', true ],
@@ -80,6 +80,6 @@ class NBD_Validation_Rules_StringContainsRuleTest extends PHPUnit_Framework_Test
         [ false, '0', false ],
     ];
 
-  } // testDataProvider
+  } // isValidDataProvider
 
 } // NBD_Validation_Rules_StringContainsRuleTest

@@ -4,13 +4,13 @@ use Behance\NBD\Validation\Services\ValidatorService;
 /**
  * @group validation
  */
-class NBD_Validation_Rules_MatchesRuleTest extends PHPUnit_Framework_TestCase {
+class NBD_Validation_Rules_MatchesRuleTest extends \PHPUnit\Framework\TestCase {
 
   protected $_class = 'Behance\NBD\Validation\Rules\MatchesRule';
 
   /**
    * @test
-   * @dataProvider testDataProvider
+   * @dataProvider isValidDataProvider
    */
   public function isValid( $value1, $value2, $expected ) {
 
@@ -122,7 +122,7 @@ class NBD_Validation_Rules_MatchesRuleTest extends PHPUnit_Framework_TestCase {
   /**
    * @return array
    */
-  public function testDataProvider() {
+  public function isValidDataProvider() {
 
     $class1 = new stdClass();
     $class2 = new stdClass();
@@ -164,6 +164,6 @@ class NBD_Validation_Rules_MatchesRuleTest extends PHPUnit_Framework_TestCase {
         [ [ 0 => 1 ], [ 0 => 1 ], true ],
     ];
 
-  } // testDataProvider
+  } // isValidDataProvider
 
 } // NBD_Validation_Rules_MatchesRuleTest

@@ -2,13 +2,13 @@
 /**
  * @group validation
  */
-class NBD_Validation_Rules_IntegerRuleTest extends PHPUnit_Framework_TestCase {
+class NBD_Validation_Rules_IntegerRuleTest extends \PHPUnit\Framework\TestCase {
 
   protected $_class = 'Behance\NBD\Validation\Rules\IntegerRule';
 
   /**
    * @test
-   * @dataProvider testDataProvider
+   * @dataProvider isValidDataProvider
    */
   public function isValid( $data, $expected ) {
 
@@ -23,7 +23,7 @@ class NBD_Validation_Rules_IntegerRuleTest extends PHPUnit_Framework_TestCase {
   /**
    * @return array
    */
-  public function testDataProvider() {
+  public function isValidDataProvider() {
 
     return [
         [ 1, true ],
@@ -46,6 +46,6 @@ class NBD_Validation_Rules_IntegerRuleTest extends PHPUnit_Framework_TestCase {
         [ 'true', false ]
     ];
 
-  } // testDataProvider
+  } // isValidDataProvider
 
 } // NBD_Validation_Rules_IntegerRuleTest

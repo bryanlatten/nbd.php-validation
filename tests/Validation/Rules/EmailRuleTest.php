@@ -5,11 +5,11 @@ namespace Behance\NBD\Validation\Rules;
 /**
  * @group validation
  */
-class EmailRuleTest extends \PHPUnit_Framework_TestCase {
+class EmailRuleTest extends \PHPUnit\Framework\TestCase {
 
   /**
    * @test
-   * @dataProvider testDataProvider
+   * @dataProvider isValidDataProvider
    */
   public function isValid( $data, $expected ) {
 
@@ -23,10 +23,13 @@ class EmailRuleTest extends \PHPUnit_Framework_TestCase {
   /**
    * @return array
    */
-  public function testDataProvider() {
+  public function isValidDataProvider() {
 
     return [
         [ 'bob@behance.com', true ],
+        [ 'bob$a@behance.com', true ],
+        [ 'bob\'a@behance.com', true ],
+        [ 'bob"a@behance.com', false ],
         [ 'bob.goodness@behance.com', true ],
         [ 'bob@behance.co.uk', true ],
         [ 'bob+abc@behance.com', true ],
@@ -41,6 +44,6 @@ class EmailRuleTest extends \PHPUnit_Framework_TestCase {
         [ ( function() {} ), false ],
     ];
 
-  } // testDataProvider
+  } // isValidDataProvider
 
 } // EmailRuleTest
