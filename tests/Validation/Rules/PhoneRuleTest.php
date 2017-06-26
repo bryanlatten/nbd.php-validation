@@ -2,11 +2,11 @@
 
 namespace Behance\NBD\Validation\Rules;
 
-class PhoneRuleTest extends \PHPUnit_Framework_TestCase {
+class PhoneRuleTest extends \PHPUnit\Framework\TestCase {
 
   /**
    * @test
-   * @dataProvider testDataProvider
+   * @dataProvider isValidDataProvider
    */
   public function isValid( $expected, $data ) {
 
@@ -19,7 +19,7 @@ class PhoneRuleTest extends \PHPUnit_Framework_TestCase {
   /**
    * @return array
    */
-  public function testDataProvider() {
+  public function isValidDataProvider() {
 
     return [
         [ 'expected' => true,  'data' => '+42 555.123.4567' ],
@@ -59,6 +59,6 @@ class PhoneRuleTest extends \PHPUnit_Framework_TestCase {
         [ 'expected' => false, 'data' => function() {} ],
     ];
 
-  } // testDataProvider
+  } // isValidDataProvider
 
 } // PhoneRuleTest

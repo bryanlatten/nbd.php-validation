@@ -2,13 +2,13 @@
 /**
  * @group validation
  */
-class NBD_Validation_Rules_RangeRuleTest extends PHPUnit_Framework_TestCase {
+class NBD_Validation_Rules_RangeRuleTest extends \PHPUnit\Framework\TestCase {
 
   protected $_class = 'Behance\NBD\Validation\Rules\RangeRule';
 
   /**
    * @test
-   * @dataProvider testDataProvider
+   * @dataProvider isValidDataProvider
    */
   public function isValid( $data, $min, $max, $expected ) {
 
@@ -61,7 +61,7 @@ class NBD_Validation_Rules_RangeRuleTest extends PHPUnit_Framework_TestCase {
   /**
    * @return array
    */
-  public function testDataProvider() {
+  public function isValidDataProvider() {
 
     return [
         [ 1, 1, 10, true ],
@@ -102,6 +102,6 @@ class NBD_Validation_Rules_RangeRuleTest extends PHPUnit_Framework_TestCase {
         [ ( function() {} ), 1, 10, false ],
     ];
 
-  } // testDataProvider
+  } // isValidDataProvider
 
 } // NBD_Validation_Rules_RangeRuleTest

@@ -2,7 +2,7 @@
 /**
  * @group validation
  */
-class NBD_Validation_Abstracts_CallbackRuleAbstractTest extends PHPUnit_Framework_TestCase {
+class NBD_Validation_Abstracts_CallbackRuleAbstractTest extends \PHPUnit\Framework\TestCase {
 
   protected $_class = 'Behance\NBD\Validation\Abstracts\CallbackRuleAbstract';
 

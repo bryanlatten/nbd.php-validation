@@ -2,13 +2,13 @@
 /**
  * @group validation
  */
-class NBD_Validation_Rules_AlphaNumericRuleTest extends PHPUnit_Framework_TestCase {
+class NBD_Validation_Rules_AlphaNumericRuleTest extends \PHPUnit\Framework\TestCase {
 
   protected $_class = 'Behance\NBD\Validation\Rules\AlphaNumericRule';
 
   /**
    * @test
-   * @dataProvider testDataProvider
+   * @dataProvider isValidDataProvider
    */
   public function isValid( $data, $expected ) {
 
@@ -23,7 +23,7 @@ class NBD_Validation_Rules_AlphaNumericRuleTest extends PHPUnit_Framework_TestCa
   /**
    * @return array
    */
-  public function testDataProvider() {
+  public function isValidDataProvider() {
 
     return [
         [ 'abc', true ],
@@ -46,6 +46,6 @@ class NBD_Validation_Rules_AlphaNumericRuleTest extends PHPUnit_Framework_TestCa
         [ ( function() {} ), false ],
     ];
 
-  } // testDataProvider
+  } // isValidDataProvider
 
 } // NBD_Validation_Rules_AlphaNumericRuleTest

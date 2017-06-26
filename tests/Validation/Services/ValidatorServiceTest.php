@@ -1,12 +1,13 @@
 <?php
 
-use Behance\NBD\Validation\Services\ValidatorService;
+use Behance\NBD\Validation\Interfaces\RulesProviderInterface;
 use Behance\NBD\Validation\Providers\RulesProvider;
+use Behance\NBD\Validation\Services\ValidatorService;
 
 /**
  * @group validation
  */
-class NBD_Validation_Services_ValidatorServiceTest extends PHPUnit_Framework_TestCase {
+class NBD_Validation_Services_ValidatorServiceTest extends \PHPUnit\Framework\TestCase {
 
   private $_target = 'Behance\NBD\Validation\Services\ValidatorService';
 
@@ -33,7 +34,7 @@ class NBD_Validation_Services_ValidatorServiceTest extends PHPUnit_Framework_Tes
    */
   public function setGetRulesProviderConstructor() {
 
-    $rules     = $this->getMock( 'Behance\NBD\Validation\Interfaces\RulesProviderInterface' );
+    $rules     = $this->createMock( RulesProviderInterface::Class );
     $validator = new ValidatorService( [], $rules );
 
     $this->assertSame( $rules, $validator->getRulesProvider() );
@@ -1332,7 +1333,7 @@ class NBD_Validation_Services_ValidatorServiceTest extends PHPUnit_Framework_Tes
     $key        = 'instance_of';
     $validator  = new ValidatorService();
     $class_name = get_class( $this );
-    $values     = [ $this, new $class_name(), $this->getMock( $class_name ) ];
+    $values     = [ $this, new $class_name(), $this->createMock( $class_name ) ];
 
     $validator->setRule( $key, 'Instance Of', "required|instanceOf[{$class_name}]" );
 
@@ -1437,7 +1438,7 @@ class NBD_Validation_Services_ValidatorServiceTest extends PHPUnit_Framework_Tes
     $name      = 'callbackFailNoErrorAdded'; // Defined below
     $rule      = 'callback';
 
-    $validator = $this->getMock( $this->_target, null );
+    $validator = new ValidatorService();
 
     $validator->setCageData( [ $key  => -1 ] );
 
@@ -1488,7 +1489,7 @@ class NBD_Validation_Services_ValidatorServiceTest extends PHPUnit_Framework_Tes
       $validator->run();
     }
 
-    $this->setExpectedException( $expected_exception );
+    $this->expectException( $expected_exception );
 
     // Invocation
     isset( $validator->$set_field );

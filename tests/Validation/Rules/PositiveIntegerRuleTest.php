@@ -1,10 +1,10 @@
 <?php
 
-class NBD_Validation_Rules_PositiveIntegerRuleTest extends PHPUnit_Framework_TestCase {
+class NBD_Validation_Rules_PositiveIntegerRuleTest extends \PHPUnit\Framework\TestCase {
 
   /**
    * @test
-   * @dataProvider testDataProvider
+   * @dataProvider isValidDataProvider
    */
   public function isValid( $data, $expected ) {
 
@@ -17,7 +17,7 @@ class NBD_Validation_Rules_PositiveIntegerRuleTest extends PHPUnit_Framework_Tes
   /**
    * @return array
    */
-  public function testDataProvider() {
+  public function isValidDataProvider() {
 
     return [
         [ 1, true ],
@@ -44,6 +44,6 @@ class NBD_Validation_Rules_PositiveIntegerRuleTest extends PHPUnit_Framework_Tes
         [ null, false ],
     ];
 
-  } // testDataProvider
+  } // isValidDataProvider
 
 } // NBD_Validation_Rules_PositiveIntegerRuleTest

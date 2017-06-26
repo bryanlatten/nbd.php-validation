@@ -2,13 +2,13 @@
 /**
  * @group validation
  */
-class NBD_Validation_Rules_InstanceOfRuleTest extends PHPUnit_Framework_TestCase {
+class NBD_Validation_Rules_InstanceOfRuleTest extends \PHPUnit\Framework\TestCase {
 
   protected $_class = 'Behance\NBD\Validation\Rules\InstanceOfRule';
 
   /**
    * @test
-   * @dataProvider testDataProvider
+   * @dataProvider isValidDataProvider
    */
   public function isValid( $input, $class_name, $pass_fail ) {
 
@@ -40,7 +40,7 @@ class NBD_Validation_Rules_InstanceOfRuleTest extends PHPUnit_Framework_TestCase
   /**
    * @return array
    */
-  public function testDataProvider() {
+  public function isValidDataProvider() {
 
     $class_name = $this->_class;
 
@@ -60,6 +60,6 @@ class NBD_Validation_Rules_InstanceOfRuleTest extends PHPUnit_Framework_TestCase
         [ 50.25e26, __CLASS__, false ],
     ];
 
-  } // testDataProvider
+  } // isValidDataProvider
 
 } // NBD_Validation_Rules_InstanceOfRuleTest

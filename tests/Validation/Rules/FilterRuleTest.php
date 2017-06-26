@@ -2,13 +2,13 @@
 /**
  * @group validation
  */
-class NBD_Validation_Rules_FilterRuleTest extends PHPUnit_Framework_TestCase {
+class NBD_Validation_Rules_FilterRuleTest extends \PHPUnit\Framework\TestCase {
 
   protected $_class = 'Behance\NBD\Validation\Rules\FilterRule';
 
   /**
    * @test
-   * @dataProvider testDataProvider
+   * @dataProvider isValidDataProvider
    */
   public function isValid( $input, $parameters, $pass_fail, $filtered ) {
 
@@ -63,7 +63,7 @@ class NBD_Validation_Rules_FilterRuleTest extends PHPUnit_Framework_TestCase {
   /**
    * @return array
    */
-  public function testDataProvider() {
+  public function isValidDataProvider() {
 
     $trimmable = '  abc  ';
     $object    = new stdClass();
@@ -79,6 +79,6 @@ class NBD_Validation_Rules_FilterRuleTest extends PHPUnit_Framework_TestCase {
         [ $closure, [ 'ltrim' ], false, $closure ],
     ];
 
-  } // testDataProvider
+  } // isValidDataProvider
 
 } // NBD_Validation_Rules_FilterRuleTest

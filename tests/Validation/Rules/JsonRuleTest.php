@@ -2,13 +2,13 @@
 /**
  * @group validation
  */
-class NBD_Validation_Rules_JsonRuleTest extends PHPUnit_Framework_TestCase {
+class NBD_Validation_Rules_JsonRuleTest extends \PHPUnit\Framework\TestCase {
 
   protected $_class = 'Behance\NBD\Validation\Rules\JsonRule';
 
   /**
    * @test
-   * @dataProvider testDataProvider
+   * @dataProvider isValidDataProvider
    */
   public function isValid( $data, $expected ) {
 
@@ -25,7 +25,7 @@ class NBD_Validation_Rules_JsonRuleTest extends PHPUnit_Framework_TestCase {
    *
    * @return array
    */
-  public function testDataProvider() {
+  public function isValidDataProvider() {
 
     return [
         [ '{}', true ],
@@ -69,6 +69,6 @@ class NBD_Validation_Rules_JsonRuleTest extends PHPUnit_Framework_TestCase {
         [ 'false', false ],
     ];
 
-  } // testDataProvider
+  } // isValidDataProvider
 
 } // NBD_Validation_Rules_JsonRuleTest
