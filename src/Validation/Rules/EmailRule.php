@@ -9,6 +9,6 @@ use Behance\NBD\Validation\Abstracts\RegexRuleAbstract;
  */
 class EmailRule extends RegexRuleAbstract {
 
-  protected $_pattern = '/^[A-Za-z0-9_\.\+\$\'-]+@[A-Za-z0-9_\.-]+\.[A-Za-z0-9_-]+$/u';
+  protected $_pattern = '/^[A-Za-z0-9_\.\+\$\'\!-]+@[A-Za-z0-9_\.-]+\.[A-Za-z0-9_-]+$/u';
 
 } // EmailRule

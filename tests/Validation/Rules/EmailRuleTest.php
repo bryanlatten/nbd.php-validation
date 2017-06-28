@@ -34,6 +34,7 @@ class EmailRuleTest extends \PHPUnit\Framework\TestCase {
         [ 'bob@behance.co.uk', true ],
         [ 'bob+abc@behance.com', true ],
         [ 'bob\0@behance.com', false ],
+        [ 'bob!@behance.com', true ],
         [ 'string', false ],
         [ 'javascript:test@behance.com', false ],
         [ 123.0e26, false ],
