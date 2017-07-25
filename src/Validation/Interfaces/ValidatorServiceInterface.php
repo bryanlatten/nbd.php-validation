@@ -23,20 +23,33 @@ interface ValidatorServiceInterface {
    *
    * @return mixed|null  null when non-existent in caged data
    */
-  public function getCageDataValue( $key );
+  public function getCageDataValue( string $key );
 
 
   /**
    * Set validation rules for a field.
    *
-   * @param string $key        index where to expect data to validate
-   * @param string $fieldname  readable name for this data field
-   * @param string $rules      pipe-delimited series of validation rules to be applied in order
+   * @throws \Behance\NBD\Validation\Exceptions\Validator\RuleRequirementException
+   *
+   * @param string       $key        index where to expect data to validate
+   * @param string       $fieldname  readable name for this data field
+   * @param string|array $rules      pipe-delimited or array series of validation rules to be applied in order
    *
    * @return $this   providing a fluent interface
    */
-  public function setRule( $key, $fieldname, $rules );
+  public function setRule( string $key, string $fieldname, $rules );
 
+  /**
+   * Set Nested validation rules for a field.
+   *
+   * @throws \Behance\NBD\Validation\Exceptions\Validator\RuleRequirementException
+   *
+   * @param string       $key        index where to expect data to validate
+   * @param string       $fieldname  readable name for this data field
+   * @param string|array $rules      pipe-delimited or array series of validation rules to be applied in order
+   * @param array        $subrules   array of nested sub rules
+   */
+  public function setNestedRule( string $key, string $fieldname, $rules, array $subrules );
 
   /**
    * Convenience function to set validation rules for multiple fields at the same time
@@ -55,7 +68,7 @@ interface ValidatorServiceInterface {
    * @param string $key
    * @param string $rule
    */
-  public function appendRule( $key, $rule );
+  public function appendRule( string $key, string $rule );
 
 
   /**
@@ -63,7 +76,7 @@ interface ValidatorServiceInterface {
    *
    * @return string   empty when not defined
    */
-  public function getFieldName( $key );
+  public function getFieldName( string $key );
 
   /**
    * Retrieves rules for all or a specific field to be validated
@@ -74,7 +87,7 @@ interface ValidatorServiceInterface {
    *
    * @return string|array
    */
-  public function getFieldRules( $key );
+  public function getFieldRules( string $key );
 
 
   /**
@@ -90,7 +103,7 @@ interface ValidatorServiceInterface {
    *
    * @return bool
    */
-  public function isFieldRequired( $key );
+  public function isFieldRequired( string $key );
 
 
   /**
@@ -100,7 +113,7 @@ interface ValidatorServiceInterface {
    *
    * @return bool
    */
-  public function isFieldNullable( $key );
+  public function isFieldNullable( string $key );
 
 
   /**
@@ -138,7 +151,7 @@ interface ValidatorServiceInterface {
    *
    * @return string
    */
-  public function getFieldErrorMessage( $key );
+  public function getFieldErrorMessage( string $key );
 
 
   /**
@@ -160,7 +173,7 @@ interface ValidatorServiceInterface {
   /**
    * Checks for a failure in an individual key
    */
-  public function isFieldFailed( $key );
+  public function isFieldFailed( string $key );
 
 
   /**
@@ -169,7 +182,7 @@ interface ValidatorServiceInterface {
    * @param string $key      validator key to tie this error message
    * @param string $message  error to display for $key, otherwise defaults to generic 'failed validation'
    */
-  public function addFieldFailure( $key, $message );
+  public function addFieldFailure( string $key, string $message );
 
 
   /**
@@ -199,7 +212,7 @@ interface ValidatorServiceInterface {
    *
    * @return $this  for fluent interface
    */
-  public function setMessageDelimiter( $delimiter );
+  public function setMessageDelimiter( string $delimiter );
 
 
   /**
