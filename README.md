@@ -10,7 +10,7 @@ in isolation, or chained together for a form-like validation interface.
 Usage
 -----
 
-#####Quickly validate a single data point
+##### Quickly validate a single data point
 
 
 ```
@@ -23,7 +23,7 @@ $valid = $rule->isValid( 'abc' );  // false
 ```
 
 
-#####Validate a complex key-value array of "caged" data, like an HTML form
+##### Validate a complex key-value array of "caged" data, like an HTML form
 
 
 ```
@@ -90,7 +90,7 @@ else {
 ```
 
 
-#####Available 'simple' validator rules (and growing):
+##### Available 'simple' validator rules (and growing):
 
 
 * alpha
@@ -109,7 +109,7 @@ else {
 * url
 
 
-#####Available parameterized validator rules
+##### Available parameterized validator rules
 
 Parameters are defined comma-separated inside brackets after rule:
 
@@ -126,7 +126,7 @@ Parameters are defined comma-separated inside brackets after rule:
 </table>
 
 
-#####Special parameterized rules:
+##### Special parameterized rules:
 
 
 <table>
@@ -137,7 +137,7 @@ Parameters are defined comma-separated inside brackets after rule:
 </table>
 
 
-#####Other Special rules:
+##### Other Special rules:
 
 
 <table>
@@ -146,7 +146,7 @@ Parameters are defined comma-separated inside brackets after rule:
 <tr><td>nullable</td><td>The nullable rule allows empty data to be passed to simulate clearing out a fields data. It accepts an empty string or `NULL` as valid input.</td></tr>
 </table>
 
-######Examples
+###### Examples
 
 <table>
   <tr><th>Case</th><th>Valid</th></tr>
@@ -162,7 +162,7 @@ Parameters are defined comma-separated inside brackets after rule:
 * special rules cannot be used exclusive together or by themselves, they must be accompanied by other rules.
 
 
-#####Add custom named validators quickly and easily:
+##### Add custom named validators quickly and easily:
 
 ```
 use Behance\NBD\Validation\Services\ValidatorService;
