@@ -1377,6 +1377,225 @@ class NBD_Validation_Services_ValidatorServiceTest extends \PHPUnit\Framework\Te
 
   } // runInstanceOfBad
 
+  /**
+   * @test
+   */
+  public function runNestedRuleValid() {
+
+    $data = [
+        'navigation' => [
+            'test_2' => 99,
+            'test_3' => [
+                'not_real_key_2' => 'hey there',
+                'test_3_sub_2'   => 'hello',
+                'test_3_sub_3'   => [
+                    'test_3_sub_2_sub_2' => 'testing',
+                    'not_real_key'       => 'hey'
+                ],
+                'test_3_sub_4' => [ 1, 2, 3 ]
+            ],
+            'lightbox' => 1,
+            'test_4'   => [
+                'test_4_sub_1' => 200
+            ]
+        ],
+        'settings' => [ 4, 7, 10 ]
+    ];
+
+    $expected_data = [
+        'navigation' => [
+            'test_2' => 99,
+            'test_3' => [
+                'test_3_sub_2' => 'hello',
+                'test_3_sub_3' => [
+                    'test_3_sub_2_sub_2' => 'testing'
+                ],
+                'test_3_sub_4' => [ 1, 2, 3 ]
+            ],
+            'lightbox' => 1,
+            'test_4'   => [
+                'test_4_sub_1' => 200
+            ]
+        ],
+        'settings' => [ 4, 7, 10 ]
+    ];
+
+
+    $navigation_subrules = [
+        [ 'test_1', 'Test 1', 'notEmpty|alpha' ],
+        [ 'test_2', 'Test 2', 'notEmpty|integer' ],
+        [ 'test_3', 'Test 3', 'required|nestedArray',
+            [
+                [ 'test_3_sub_1', 'Test 3 Sub 1', 'nullable|alpha' ],
+                [ 'test_3_sub_2', 'Test 3 Sub 2', 'required|notEmpty|alpha' ],
+                [ 'test_3_sub_3', 'Test 3 Sub 3', 'nestedArray',
+                    [
+                        [ 'test_3_sub_1_sub_1', 'Test 3 Sub 1 Sub 1', 'nullable|alpha' ],
+                        [ 'test_3_sub_2_sub_2', 'Test 3 Sub 2 Sub 2', 'minLength[5]' ],
+                    ]
+                ],
+                [ 'test_3_sub_4', 'Test 3 Sub 3', 'required|array' ],
+            ],
+        ],
+        [ 'lightbox', 'Lightbox', 'required|containedIn[0,1]' ],
+        [ 'test_4', 'Test 4', 'nestedArray',
+            [
+                [ 'test_4_sub_1', 'Test 4 Sub 1', 'required|notEmpty|integer' ]
+            ]
+        ]
+    ];
+
+    $validator = new ValidatorService();
+
+    $validator->setRules( [
+       [ 'navigation', 'Navigation', 'nestedArray', $navigation_subrules ],
+       [ 'settings', 'Settings', 'array' ]
+    ] );
+
+    $validator->setCageData( $data );
+    $this->assertTrue( $validator->runStrict() );
+
+    $validated_data = $validator->getValidatedData();
+
+    $this->assertEquals( 'testing', $validated_data['navigation']['test_3']['test_3_sub_3']['test_3_sub_2_sub_2']  );
+    $this->assertEquals( 99, $validated_data['navigation']['test_2'] );
+    $this->assertEquals( $expected_data, $validator->getValidatedData() );
+
+  } // runNestedRuleValid
+
+  /**
+   * @return array
+   */
+  public function runNestedRuleInvalidProvider () {
+
+    $navigation_subrules = [
+        [ 'test_1', 'Test 1', 'required|alpha' ],
+        [ 'test_2', 'Test 2', 'notEmpty|alpha' ],
+        [ 'test_3', 'Test 3', 'nestedArray',
+            [
+                [ 'test_3_sub_1', 'Test 3 Sub 1', 'nullable|alpha' ],
+                [ 'test_3_sub_2', 'Test 3 Sub 2', 'notEmpty|alpha' ],
+                [ 'test_3_sub_3', 'Test 3 Sub 3', 'required|nestedArray',
+                    [
+                        [ 'test_3_sub_1_sub_1', 'Test 3 Sub 1 Sub 1', 'nullable|alpha' ],
+                        [ 'test_3_sub_2_sub_2', 'Test 3 Sub 2 Sub 2', 'minLength[5]' ],
+                    ]
+                ]
+            ],
+        ],
+        [ 'lightbox', 'Lightbox', 'required|containedIn[0,1]' ]
+    ];
+
+    $data_1 = [
+        'navigation' => [
+            'test_1' => 'hey',
+            'test_2' => '',
+            'test_3' => [
+                'not_real_key_2' => 'hey there',
+                'test_3_sub_3' => [
+                    'test_3_sub_2_sub_2' => 'testing',
+                    'not_real_key'       => 'hey'
+                ]
+            ],
+            'lightbox' => 1
+        ],
+        'settings' => [ 4, 7, 10 ]
+    ];
+
+    $data_2 = [
+        'navigation' => [
+            'test_2' => 'abcdef',
+            'test_3' => [
+                'not_real_key_2' => 'hey there',
+                'test_3_sub_3' => [
+                    'test_3_sub_2_sub_2' => 'testing',
+                    'not_real_key'       => 'hey'
+                ]
+            ],
+            'lightbox' => 1
+        ],
+        'settings' => [ 4, 7, 10 ]
+    ];
+
+    $data_3 = [
+        'navigation' => [
+            'test_2' => 'abcdef',
+            'test_3' => 'not array',
+            'lightbox' => 1
+        ],
+        'settings' => [ 4, 7, 10 ]
+    ];
+
+    $data_4 = [
+        'navigation' => [
+            'test_1' => 'hey',
+            'test_2' => '',
+            'test_3' => [
+                'not_real_key_2' => 'hey there',
+                'test_3_sub_3' => [
+                    'test_3_sub_2_sub_2' => 'testing',
+                    'test_3_sub_2_sub_2' => 'four'
+                ]
+            ],
+            'lightbox' => 1
+        ],
+        'settings' => [ 4, 7, 10 ]
+    ];
+
+    $data_5 = [
+        'navigation' => [
+            'test_1' => 'hey',
+            'test_2' => 'hi',
+            'test_3' => [
+                'not_real_key_2' => 'hey there',
+            ],
+            'lightbox' => 1
+        ],
+        'settings' => [ 4, 7, 10 ]
+    ];
+
+    $data_6 = [
+        'navigation' => [
+            'test_1' => 'hey',
+            'test_2' => '',
+            'test_3' => 'not nested array',
+            'lightbox' => 1
+        ],
+        'settings' => [ 4, 7, 10 ]
+    ];
+
+
+    return [
+        'Testing empty top level'               => [ $navigation_subrules, $data_1, 'Test 2 failed validation' ],
+        'Testing required top level'            => [ $navigation_subrules, $data_2, 'Test 1 is required' ],
+        'Testing not nestedArray top level'     => [ $navigation_subrules, $data_3, 'Test 1 is required, Test 3 failed validation' ],
+        'Testing bad data nested sub key'       => [ $navigation_subrules, $data_4, 'Test 2 failed validation, Test 3 Sub 2 Sub 2 must be 5 characters or more' ],
+        'Testing missing required nested array' => [ $navigation_subrules, $data_5, 'Test 3 Sub 3 is required' ],
+        'Testing invalid nested array'          => [ $navigation_subrules, $data_6, 'Test 2 failed validation, Test 3 failed validation, Test 3 Sub 3 is required' ],
+    ];
+
+  } // runNestedRuleInvalidProvider
+
+  /**
+   * @test
+   * @dataProvider runNestedRuleInvalidProvider
+   * @expectedException  Behance\NBD\Validation\Exceptions\Validator\FailureException
+   */
+  public function runNestedRuleInvalid( array $rules, array $data, string $message ) {
+
+    $validator = new ValidatorService();
+
+    $validator->setNestedRule(
+        'navigation', 'Navigation', 'nestedArray', $rules
+    );
+
+    $this->expectExceptionMessage( $message );
+
+    $validator->setCageData( $data );
+    $validator->runStrict();
+
+
+  } // runNestedRuleInvalid
 
   /**
    * @test

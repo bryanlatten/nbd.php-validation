@@ -2,18 +2,16 @@
 
 namespace Behance\NBD\Validation\Services;
 
-use Behance\NBD\Validation\Interfaces\ValidatorServiceInterface;
-use Behance\NBD\Validation\Interfaces\RulesProviderInterface;
-use Behance\NBD\Validation\Interfaces\RuleInterface;
-
-use Behance\NBD\Validation\Providers\RulesProvider;
-use Behance\NBD\Validation\Formatters\ErrorFormatter;
-use Behance\NBD\Validation\Rules\Templates\CallbackTemplateRule;
-
-use Behance\NBD\Validation\Exceptions\Validator\InvalidRuleException;
-use Behance\NBD\Validation\Exceptions\Validator\RuleRequirementException;
 use Behance\NBD\Validation\Exceptions\Validator\FailureException;
+use Behance\NBD\Validation\Exceptions\Validator\InvalidRuleException;
 use Behance\NBD\Validation\Exceptions\Validator\NotRunException;
+use Behance\NBD\Validation\Exceptions\Validator\RuleRequirementException;
+use Behance\NBD\Validation\Formatters\ErrorFormatter;
+use Behance\NBD\Validation\Interfaces\RuleInterface;
+use Behance\NBD\Validation\Interfaces\RulesProviderInterface;
+use Behance\NBD\Validation\Interfaces\ValidatorServiceInterface;
+use Behance\NBD\Validation\Providers\RulesProvider;
+use Behance\NBD\Validation\Rules\Templates\CallbackTemplateRule;
 
 class ValidatorService implements ValidatorServiceInterface {
 
@@ -93,11 +91,9 @@ class ValidatorService implements ValidatorServiceInterface {
    *
    * @return mixed|null  null when non-existent in caged data
    */
-  public function getCageDataValue( $key ) {
+  public function getCageDataValue( string $key ) {
 
-    return ( isset( $this->_cage_data[ $key ] ) )
-           ? $this->_cage_data[ $key ]
-           : null;
+    return $this->getArrayPathValue( $key );
 
   } // getCageDataValue
 
@@ -107,13 +103,13 @@ class ValidatorService implements ValidatorServiceInterface {
    *
    * @throws \Behance\NBD\Validation\Exceptions\Validator\RuleRequirementException
    *
-   * @param string $key        index where to expect data to validate
-   * @param string $fieldname  readable name for this data field
-   * @param string $rules      pipe-delimited or array series of validation rules to be applied in order
+   * @param string       $key        index where to expect data to validate
+   * @param string       $fieldname  readable name for this data field
+   * @param string|array $rules      pipe-delimited or array series of validation rules to be applied in order
    *
    * @return $this   providing a fluent interface
    */
-  public function setRule( $key, $fieldname, $rules ) {
+  public function setRule( string $key, string $fieldname, $rules ) {
 
     $rules = ( is_array( $rules ) )
              ? $rules
@@ -137,6 +133,39 @@ class ValidatorService implements ValidatorServiceInterface {
 
   } // setRule
 
+  /**
+   * Set Nested validation rule for a field
+   *
+   * @param string       $key        index where to expect data to validate
+   * @param string       $fieldname  readable name for this data field
+   * @param string|array $rules      pipe-delimited or array series of validation rules to be applied in order
+   * @param array        $subrules   array of nested sub rules
+   */
+  public function setNestedRule( string $key, string $fieldname, $rules, array $subrules ) {
+
+    // Set top level nestedArray rule
+    $this->setRule( $key, $fieldname, $rules );
+
+    foreach ( $subrules as $subrule ) {
+
+      $subrule_key = $key . "." . $subrule[0];
+
+      $fieldname   = $subrule[1];
+      $rules       = $subrule[2];
+      $subrules    = $subrule[3] ?? null;
+
+      // If more nestedArray rules are passed in, recursively traverse and set those rules
+      if ( $subrules ) {
+        $this->setNestedRule( $subrule_key, $fieldname, $rules, $subrules );
+      }
+      // Set each subrule that is not a nestedArray
+      else {
+        $this->setRule( $subrule_key, $fieldname, $rules );
+      }
+
+    } // foreach subrules as subrule
+
+  } // setNestedRule
 
   /**
    * Convenience function to set validation rules for multiple fields at the same time
@@ -148,17 +177,23 @@ class ValidatorService implements ValidatorServiceInterface {
    */
   public function setRules( array $rule_groups ) {
 
-    $parameters = 3;
-
     foreach ( $rule_groups as $rule_group ) {
 
-      if ( count( $rule_group ) !== $parameters ) {
-        throw new InvalidRuleException( "{$parameters} parameters required for setRule, " . count( $rule_group ) . " given" );
+      $rule_group_count = count( $rule_group );
+
+      if ( $rule_group_count === 3 ) {
+        list( $key, $fieldname, $validators ) = $rule_group;
+        $this->setRule( $key, $fieldname, $validators );
+        continue;
       }
 
-      list( $key, $fieldname, $validators ) = $rule_group;
+      if ( $rule_group_count === 4 ) {
+        list( $key, $fieldname, $validators, $subrules ) = $rule_group;
+        $this->setNestedRule( $key, $fieldname, $validators, $subrules );
+        continue;
+      }
 
-      $this->setRule( $key, $fieldname, $validators );
+      throw new InvalidRuleException( "At least 3 parameters required for rule, " . $rule_group_count . " given" );
 
     } // foreach rules
 
@@ -177,7 +212,7 @@ class ValidatorService implements ValidatorServiceInterface {
    *
    * @return $this  fluent interface
    */
-  public function appendRule( $key, $rule ) {
+  public function appendRule( string $key, string $rule ) {
 
     if ( empty( $this->_rules[ $key ] ) ) {
       throw new InvalidRuleException( "Key {$key} not yet set, cannot be appended" );
@@ -195,7 +230,7 @@ class ValidatorService implements ValidatorServiceInterface {
    *
    * @return string   empty when not defined
    */
-  public function getFieldName( $key ) {
+  public function getFieldName( string $key ) {
 
     return ( isset( $this->_field_names[ $key ] ) )
            ? $this->_field_names[ $key ]
@@ -225,7 +260,7 @@ class ValidatorService implements ValidatorServiceInterface {
    *
    * @return string|array
    */
-  public function getFieldRules( $key ) {
+  public function getFieldRules( string $key ) {
 
     $rules = $this->getAllFieldRules();
 
@@ -255,7 +290,7 @@ class ValidatorService implements ValidatorServiceInterface {
    *
    * @return bool
    */
-  public function isFieldRequired( $key ) {
+  public function isFieldRequired( string $key ) {
 
     $rules = $this->getFieldRules( $key );
 
@@ -271,7 +306,7 @@ class ValidatorService implements ValidatorServiceInterface {
    *
    * @return bool
    */
-  public function isFieldNullable( $key ) {
+  public function isFieldNullable( string $key ) {
 
     $rules = $this->getFieldRules( $key );
 
@@ -312,7 +347,7 @@ class ValidatorService implements ValidatorServiceInterface {
           'validator' => $this
       ];
 
-      if ( !array_key_exists( $field, $this->_cage_data ) ) {
+      if ( !$this->isArrayPathValueSet( $field ) ) {
 
         // Special Case: stop processing when data is completely missing, involve required rule
 
@@ -382,9 +417,13 @@ class ValidatorService implements ValidatorServiceInterface {
 
       } // foreach rules
 
+      if ( in_array( 'nestedArray', $rules ) ) {
+        continue;
+      }
+
       // On successfully passing all rules, move data to validated array
       if ( !$field_failed ) {
-        $this->_valid_data[ $field ] = $raw_data;
+        $this->_setValidData( $field, $raw_data );
       }
 
     } // foreach rules_set
@@ -395,6 +434,63 @@ class ValidatorService implements ValidatorServiceInterface {
 
   } // run
 
+  /**
+   * @param  string $field
+   *
+   * @return bool
+   */
+  public function isArrayPathValueSet( string $field ) {
+
+    $paths = explode( "." , $field);
+
+    if ( count( $paths ) === 1 ) {
+      return array_key_exists( $paths[0], $this->_cage_data );
+    }
+
+    $temp = $this->_cage_data;
+
+    foreach( $paths as $path ) {
+
+      if ( !is_array( $temp ) ) {
+        return false;
+      }
+
+      if ( !array_key_exists( $path, $temp ) ) {
+        return false;
+      }
+
+      $temp = $temp[ $path ];
+
+    }
+
+    return true;
+
+  } // isArrayPathValueSet
+
+  /**
+   * @param  string $field
+   *
+   * @return mixed
+   */
+  public function getArrayPathValue( string $field ) {
+
+    $paths = explode( "." , $field);
+
+    $temp = $this->_cage_data;
+
+    foreach( $paths as $path ) {
+
+      if ( !isset( $temp[ $path ] ) ) {
+        return null;
+      }
+
+      $temp = $temp[ $path ];
+
+    }
+
+    return $temp;
+
+  } // getArrayPathValue
 
   /**
    * @throws FailureException on failure
@@ -447,7 +543,7 @@ class ValidatorService implements ValidatorServiceInterface {
    *
    * @return string  as fieldname is not
    */
-  public function getFieldErrorMessage( $field, array $context = [] ) {
+  public function getFieldErrorMessage( string $field, array $context = [] ) {
 
     if ( !isset( $this->_errors[ $field ] ) ) {
       return '';
@@ -559,7 +655,7 @@ class ValidatorService implements ValidatorServiceInterface {
    *
    * @return boolean
    */
-  public function isFieldFailed( $key ) {
+  public function isFieldFailed( string $key ) {
 
     $error_keys = $this->getFailedFields();
 
@@ -574,7 +670,7 @@ class ValidatorService implements ValidatorServiceInterface {
    * @param string $field    which one failed
    * @param string $message  error template following structure identical to any rule message template
    */
-  public function addFieldFailure( $field, $message ) {
+  public function addFieldFailure( string $field, string $message ) {
 
     // Use a template to allow injection of message template
     $rule = $this->_buildTemplateRule();
@@ -619,7 +715,7 @@ class ValidatorService implements ValidatorServiceInterface {
    *
    * @return $this  for fluent interface
    */
-  public function setMessageDelimiter( $delimiter ) {
+  public function setMessageDelimiter( string $delimiter ) {
 
     $this->_delimiter = $delimiter;
 
@@ -875,5 +971,24 @@ class ValidatorService implements ValidatorServiceInterface {
     return $this->_special_rules;
 
   } // _getSpecialRules
+
+  /**
+   * @param string $field
+   * @param mixed $raw_data
+   */
+  private function _setValidData( string $field, $raw_data ) {
+
+    $paths = explode( "." , $field);
+
+    $temp = &$this->_valid_data;
+
+    foreach( $paths as $path ) {
+      $temp = &$temp[ $path ];
+    }
+
+    $temp = $raw_data;
+    unset( $temp );
+
+  } // _setValidData
 
 } // ValidatorService

@@ -54,10 +54,10 @@ if ( !$valid ) {
 
   // Retrieves an error message string for all failed fields
   $error_message = $validator->getAllFieldErrorMessagesString();
-  
+
   // Retrieves the unrendered error templates for all failed fields
   $error_message = $validator->getAllFieldErrorTemplates();
-  
+
   // Retrieves the context for a given field error
   $error_context = $validator->getFieldErrorContext( $field );
 
@@ -107,6 +107,7 @@ else {
 * phone
 * string
 * url
+* nestedArray
 
 
 ##### Available parameterized validator rules
@@ -183,4 +184,44 @@ $closure = ( function( $data ) {
 $callback_rule = $rules->setCallbackRule( 'hello', $closure );
 
 $callback_rule->isValid( 'hello' );  // true
+```
+
+#####Recursive Rules
+
+The `nestedArray` rule takes an additional 4th parameter, which is an array of rules
+
+```
+use Behance\NBD\Validation\Services\ValidatorService;
+
+$validator = new ValidatorService();
+
+$validator->setRules( [
+    [ 'email', 'E-Mail', 'required|email' ],
+    [ 'name',  'Name',   'nestedArray',
+        [
+            [ 'first_name', 'First Name',      'required|alpha' ],
+            [ 'last_name',  'Last Name',       'required|alpha' ],
+            [ 'middle_i',   'Middle Initial',  'alpha|nullable|maxLength[10]' ]
+        ]
+    ]
+] );
+
+also can set using setNestedRule:
+
+$validator->setNestedRule( [ 'name',  'Name',   'nestedArray',
+    [
+        [ 'first_name', 'First Name',      'required|alpha' ],
+        [ 'last_name',  'Last Name',       'required|alpha' ],
+        [ 'middle_i',   'Middle Initial',  'alpha|nullable|maxLength[10]' ]
+    ]
+] );
+
+$validator->runStrict();
+
+$validated_data = $validator->getValidatedData();
+
+$email      = $validated_data['email'];
+$first_name = $validated_data['name']['first_name'];
+$last_name  = $validated_data['name']['last_name'];
+$middle_i   = $validated_data['name']['middle_i'];
 ```
