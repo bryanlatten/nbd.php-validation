@@ -66,9 +66,9 @@ interface ValidatorServiceInterface {
    * Programmatically add another rule to an EXISTING set
    *
    * @param string $key
-   * @param string $rule
+   * @param mixed  $rule
    */
-  public function appendRule( string $key, string $rule );
+  public function appendRule( string $key, $rule );
 
 
   /**
