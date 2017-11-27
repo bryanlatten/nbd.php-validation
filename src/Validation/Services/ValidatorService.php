@@ -208,11 +208,11 @@ class ValidatorService implements ValidatorServiceInterface {
    * @throws InvalidRuleException
    *
    * @param  string $key
-   * @param  string $rule
+   * @param  mixed  $rule
    *
    * @return $this  fluent interface
    */
-  public function appendRule( string $key, string $rule ) {
+  public function appendRule( string $key, $rule ) {
 
     if ( empty( $this->_rules[ $key ] ) ) {
       throw new InvalidRuleException( "Key {$key} not yet set, cannot be appended" );
