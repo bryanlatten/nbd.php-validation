@@ -29,6 +29,7 @@ class EmailRuleTest extends \PHPUnit\Framework\TestCase {
         [ 'bob@behance.com', true ],
         [ 'bob$a@behance.com', true ],
         [ 'bob\'a@behance.com', true ],
+        [ 'mark\'dunphy..246!#$%&*+-/=?^_`{|}~@adobe.behance.net', true ],
         [ 'bob"a@behance.com', false ],
         [ 'bob.goodness@behance.com', true ],
         [ 'bob@behance.co.uk', true ],
