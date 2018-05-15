@@ -28,12 +28,20 @@ class UrlRuleTest extends \PHPUnit\Framework\TestCase {
     return [
         // allowed
         [ 'www.google.com', true ],
+        [ 'behance.net', true ],
         [ 'bob@behance.com', true ],
         [ 'mailto:dave@behance.com', true ],
         [ 'http://www.google.com', true ],
         [ 'https://www.google.com', true ],
         [ 'www.google.com?a=1&b=2#fun', true ],
         [ 'www.behance.net/job/Multimedia-Designer%2C-Senior', true ], // testing "%2C"
+        // allowed: Punycode
+        [ 'http://punycode.XN--TCKWE', true ],
+        // allowed: Non-Latin characters
+        [ 'http://全国温泉ガイド.jp', true ],
+        [ 'http://उदाहरण.परीक्षा', true ],
+        [ 'http://минобрнауки.рф', true ],
+        [ 'минобрнауки.рф', true ],
         // disallowed: protocol relative
         [ '//www.google.com', false ],
         [ '//www.google.co.uk', false ],
